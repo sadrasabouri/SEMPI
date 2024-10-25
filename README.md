@@ -109,7 +109,7 @@ python eval.py --ckpt_name label_0402_fold_0 --device 1 --model_freeze part --ta
 
 ## License
 
-OpenSense is available under an [USC Research License](LICENSE).
+SEMPI is available under an [USC Research License](LICENSE).
 
 3rd-party components may have their respective licenses. Please contact their respective authors to obtain licenses.
 

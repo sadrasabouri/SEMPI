@@ -1,0 +1,8 @@
+data/engagement/text/
+data/engagement/audio
+data/engagement/video
+data/engagement/additional_labels
+data/engagement/label_*
+data/engagement/annotations_*
+data/engagement/featopenface
+model_weights/

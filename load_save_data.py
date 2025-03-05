@@ -150,13 +150,17 @@ class DataSetLoader():
 
                 for (p0, data0), (p1, data1) in combinations(person_dfs.items(), 2): # TODO: Change it to all subsets starting with pi for each pi (pi + comb(A - pi))
                     e0, df0 = data0["engagement"], data0["df"]
-                    _, df1 = data1["engagement"], data1["df"]
+                    e1, df1 = data1["engagement"], data1["df"]
                     if df0.equals(df1):
                         continue
 
                     engagements.append(e0)
                     openface_features.append([df0, df1])
                     person_ids.append([p0, p1])
+
+                    engagements.append(e1)
+                    openface_features.append([df1, df0])
+                    person_ids.append([p1, p0])
         return engagements, openface_features, person_ids
 
 
@@ -202,9 +206,3 @@ import pickle
 
 with open(os.path.join(DATA_PATH, 'dataset.pkl'), 'wb') as f:
     pickle.dump(dataset, f)
-
-with open(os.path.join(DATA_PATH, 'train_loader.pkl'), 'wb') as f:
-    pickle.dump(train_loader, f)
-
-with open(os.path.join(DATA_PATH, 'val_loader.pkl'), 'wb') as f:
-    pickle.dump(val_loader, f)

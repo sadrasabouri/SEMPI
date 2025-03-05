@@ -3,13 +3,11 @@ import torch
 import numpy as np
 import pandas as pd
 from torch.utils.data import Dataset, DataLoader
-from sklearn.model_selection import train_test_split
 from typing import List, Dict, Tuple, Any
-from itertools import combinations, chain, product
+from itertools import combinations, chain
 import os
 
-# PATH = os.path.dirname(os.path.abspath(__file__))
-PATH = os.path.dirname(".")
+PATH = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(PATH, 'data')
 
 # %%
@@ -182,27 +180,26 @@ def create_dataloaders(dataset: InterPersenSEMPIDataset, batch_size: int = 32) -
     return train_loader, val_loader
 
 # %%
-ds_loader = DataSetLoader(DATA_PATH)
-dataset = ds_loader.get_dataset()
+if __name__ == "__main__":
+    ds_loader = DataSetLoader(DATA_PATH)
+    dataset = ds_loader.get_dataset()
 
-# %%
-train_loader, val_loader = create_dataloaders(dataset)
-print(f"Train size: {len(train_loader.dataset)}")
-print(f"Val size: {len(val_loader.dataset)}")
+    train_loader, val_loader = create_dataloaders(dataset)
+    print(f"Train size: {len(train_loader.dataset)}")
+    print(f"Val size: {len(val_loader.dataset)}")
 
-print(dataset.get_metadata(0))
+    print(dataset.get_metadata(0))
 
-for i, data in enumerate(train_loader):
-    print(f"Batch {i}")
-    if i == 2:
-        break
-    print(data['features'].shape)
-    print(data['pids'])
-    print(data['score'])
+    for i, data in enumerate(train_loader):
+        print(f"Batch {i}")
+        if i == 2:
+            break
+        print(data['features'].shape)
+        print(data['pids'])
+        print(data['score'])
 
-# %%
-# save the dataset and dataloaders with pickle
-import pickle
+    # save the dataset and dataloaders with pickle
+    import pickle
 
-with open(os.path.join(DATA_PATH, 'dataset.pkl'), 'wb') as f:
-    pickle.dump(dataset, f)
+    with open(os.path.join(DATA_PATH, 'dataset.pkl'), 'wb') as f:
+        pickle.dump(dataset, f)

@@ -13,6 +13,12 @@ PATH = os.path.dirname(".")
 DATA_PATH = os.path.join(PATH, 'data')
 
 # %%
+def all_subsets(lst: List[Any]) -> List[List[Any]]:
+    return list(chain(*[combinations(lst, i) for i in range(len(lst) + 1)]))
+
+all_subsets([1, 2, 3])
+
+# %%
 META_DATA_COLUMNS = ['frame', 'face_id', 'timestamp', 'confidence', 'success']
 
 class InterPersenSEMPIDataset(Dataset):
@@ -142,7 +148,7 @@ class DataSetLoader():
                 if len(person_dfs) < 2:
                     continue
 
-                for (p0, data0), (p1, data1) in combinations(person_dfs.items(), 2): # TODO: Change it to all subsets starting with pi for each pi (pi + all_subset(A - pi))
+                for (p0, data0), (p1, data1) in combinations(person_dfs.items(), 2): # TODO: Change it to all subsets starting with pi for each pi (pi + comb(A - pi))
                     e0, df0 = data0["engagement"], data0["df"]
                     _, df1 = data1["engagement"], data1["df"]
                     if df0.equals(df1):
@@ -191,13 +197,14 @@ for i, data in enumerate(train_loader):
     print(data['score'])
 
 # %%
-# save the dataset and dataloaders
-torch.save(dataset, os.path.join(DATA_PATH, 'dataset.pth'))
-torch.save(train_loader, os.path.join(DATA_PATH, 'train_loader.pth'))
-torch.save(val_loader, os.path.join(DATA_PATH, 'val_loader.pth'))
-print("Dataset and dataloaders saved")
+# save the dataset and dataloaders with pickle
+import pickle
 
-# %%
+with open(os.path.join(DATA_PATH, 'dataset.pkl'), 'wb') as f:
+    pickle.dump(dataset, f)
 
+with open(os.path.join(DATA_PATH, 'train_loader.pkl'), 'wb') as f:
+    pickle.dump(train_loader, f)
 
-
+with open(os.path.join(DATA_PATH, 'val_loader.pkl'), 'wb') as f:
+    pickle.dump(val_loader, f)

@@ -6,3 +6,4 @@ data/engagement/label_*
 data/engagement/annotations_*
 data/engagement/featopenface
 model_weights/
+__pycache__/

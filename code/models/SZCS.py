@@ -1,4 +1,11 @@
-from torch import nn
+import torch
+import torch.nn as nn
+
+from models.pytorch_i3d import InceptionI3d
+from models.hubert import HubertBase, HubertLarge
+from transformers import RobertaModel, RobertaTokenizer
+
+from data import OPENFACE_COLUMN_NAMES
 from multimodal import EarlyFusion
 
 class SpeakerListenerSMEPI(nn.Module):

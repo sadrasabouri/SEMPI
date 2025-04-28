@@ -204,16 +204,120 @@ if __name__ == "__main__":
     with open(os.path.join(DATA_PATH, 'dataset.pkl'), 'wb') as f:
         pickle.dump(dataset, f)
 
+
+
+META_DATA_COLUMNS = ['frame', 'face_id', 'timestamp', 'confidence', 'success']
+
+# class ListenerSpeakerFeatureDataset(Dataset):
+#     def __init__(self, csv_path, frame_length=64, root_dir=""):
+#         self.data = pd.read_csv(csv_path)
+#         self.frame_length = frame_length
+#         self.root_dir = root_dir
+
+#     def __len__(self):
+#         return len(self.data)
+
+#     def load_audio_feature(self, path):
+#         full_path = os.path.join(self.root_dir, path)
+#         try:
+#             tensor = torch.load(full_path)
+#             if tensor.ndim == 1:
+#                 tensor = tensor.unsqueeze(0)
+#             return tensor.T if tensor.ndim == 2 else tensor
+#         except Exception as e:
+#             print(f"Error loading audio feature from {full_path}:\n{e}")
+#             raise
+
+#     def load_openface_feature(self, path, exclude_cols=META_DATA_COLUMNS):
+#         full_path = os.path.join(self.root_dir, path)
+    
+#         # print(f"Loading video feature from {full_path}")
+#         df = pd.read_csv(full_path)
+#         df = df.loc[:, ~df.columns.isin(exclude_cols)]
+#         return torch.tensor(df.values, dtype=torch.float32)
+    
+#     def load_video_feature(self, path):
+#         full_path = os.path.join(self.root_dir, path)
+#         # print(full_path)
+#         try:
+#             tensor = torch.load(full_path)
+#             if tensor.ndim == 1:
+#                 tensor = tensor.unsqueeze(0)
+#             return tensor.T if tensor.ndim == 2 else tensor
+#         except Exception as e:
+#             print(f"Error loading video feature from {full_path}:\n{e}")
+#             raise
+
+#     def _pad_or_crop(self, feature_tensor):
+#         n_frames, n_features = feature_tensor.shape
+#         output = torch.zeros((self.frame_length, n_features))
+#         if n_frames >= self.frame_length:
+#             output[:] = feature_tensor[:self.frame_length]
+#         else:
+#             output[:n_frames] = feature_tensor
+#         return output.T  # shape: (n_features, frame_length)
+
+#     def __getitem__(self, idx):
+#         row = self.data.iloc[idx]
+
+#         listener_audio = self.load_audio_feature(row["listener_audio_path"])
+#         listener_video = self.load_video_feature(row["listener_videofeatures_path"])
+#         speaker_audio = self.load_audio_feature(row["speaker_audio_path"])
+#         speaker_video = self.load_video_feature(row["speaker_videofeatures_path"])
+#         listener_openface = self.load_openface_feature(row["listener_openface_path"])
+#         speaker_openface = self.load_openface_feature(row["speaker_openface_path"])
+#         # print(listener_video.shape, speaker_video.shape)
+#         # print(listener_audio.shape, speaker_audio.shape)
+#         listener_feat = listener_video
+#         speaker_feat = speaker_audio
+
+#         # listener_feat = self._pad_or_crop(listener_video)
+#         # speaker_feat = self._pad_or_crop(speaker_video)
+        
+#         # features = torch.stack([listener_feat, speaker_feat], dim=0)  # shape: (2, n_features, frame_length)
+#         features = (speaker_feat,listener_feat, listener_openface)
+#         engagement = torch.tensor(float(row["engagement"]), dtype=torch.float32)
+#         pids = torch.tensor([0, 1], dtype=torch.int64)
+
+#         return {
+#             "features": features,
+#             "score": engagement,
+#             "pids": pids
+#         }
+    
+
+
+
+
 class ListenerSpeakerFeatureDataset(Dataset):
-    def __init__(self, csv_path, frame_length=64, root_dir=""):
+    def __init__(self, csv_path, frame_length=64, root_dir="", listener_video_features_size=1024, speaker_features_size=1024):
         self.data = pd.read_csv(csv_path)
         self.frame_length = frame_length
         self.root_dir = root_dir
+        self.listener_video_features_size = listener_video_features_size  # Fixed size for listener video features
+        self.speaker_features_size = speaker_features_size  # Fixed size for speaker features
 
     def __len__(self):
         return len(self.data)
 
-    def load_audio_feature_pt(self, path):
+    def load_audio_feature(self, path):
+        full_path = os.path.join(self.root_dir, path)
+        try:
+            tensor = torch.load(full_path)
+            if tensor.ndim == 1:
+                tensor = tensor.unsqueeze(0)
+            return tensor if tensor.ndim == 2 else tensor
+        except Exception as e:
+            print(f"Error loading audio feature from {full_path}:\n{e}")
+            raise
+
+    def load_openface_feature(self, path, exclude_cols=META_DATA_COLUMNS):
+        full_path = os.path.join(self.root_dir, path)
+        df = pd.read_csv(full_path)
+        df = df.loc[:, ~df.columns.isin(exclude_cols)]
+        return torch.tensor(df.values, dtype=torch.float32)
+
+    def load_video_feature(self, path):
         full_path = os.path.join(self.root_dir, path)
         try:
             tensor = torch.load(full_path)
@@ -221,18 +325,21 @@ class ListenerSpeakerFeatureDataset(Dataset):
                 tensor = tensor.unsqueeze(0)
             return tensor.T if tensor.ndim == 2 else tensor
         except Exception as e:
-            print(f"Error loading audio feature from {full_path}:\n{e}")
+            print(f"Error loading video feature from {full_path}:\n{e}")
             raise
 
-    def load_video_feature_csv(self, path, exclude_cols=META_DATA_COLUMNS):
-        full_path = os.path.join(self.root_dir, path)
-    
-        # print(f"Loading video feature from {full_path}")
-        df = pd.read_csv(full_path)
-        df = df.loc[:, ~df.columns.isin(exclude_cols)]
-        return torch.tensor(df.values, dtype=torch.float32)
+    def _pad_or_crop(self, feature_tensor, expected_size):
+        """ Ensure the second dimension (features) is of the expected size """
+        _, n_features = feature_tensor.shape
+        if n_features < expected_size:
+            padding = expected_size - n_features
+            feature_tensor = torch.cat([feature_tensor, torch.zeros(feature_tensor.shape[0], padding)], dim=1)
+        elif n_features > expected_size:
+            feature_tensor = feature_tensor[:, :expected_size]
+        return feature_tensor
 
-    def _pad_or_crop(self, feature_tensor):
+    def _pad_or_crop_frames(self, feature_tensor):
+        """ Padding or cropping the frames dimension to match frame_length """
         n_frames, n_features = feature_tensor.shape
         output = torch.zeros((self.frame_length, n_features))
         if n_frames >= self.frame_length:
@@ -244,21 +351,30 @@ class ListenerSpeakerFeatureDataset(Dataset):
     def __getitem__(self, idx):
         row = self.data.iloc[idx]
 
-        listener_audio = self.load_audio_feature_pt(row["listener_audio_path"])
-        listener_video = self.load_video_feature_csv(row["listener_video_path"])
-        speaker_audio = self.load_audio_feature_pt(row["speaker_audio_path"])
-        speaker_video = self.load_video_feature_csv(row["speaker_video_path"])
-        # print(listener_video.shape, speaker_video.shape)
-        # print(listener_audio.shape, speaker_audio.shape)
+        listener_audio = self.load_audio_feature(row["listener_audio_path"])
+        listener_video = self.load_video_feature(row["listener_videofeatures_path"])
+        speaker_audio = self.load_audio_feature(row["speaker_audio_path"])
+        speaker_video = self.load_video_feature(row["speaker_videofeatures_path"])
+        listener_openface = self.load_openface_feature(row["listener_openface_path"])
+        speaker_openface = self.load_openface_feature(row["speaker_openface_path"])
 
-        # listener_feat = self._pad_or_crop(listener_audio) + self._pad_or_crop(listener_video)
-        # speaker_feat = self._pad_or_crop(speaker_audio) + self._pad_or_crop(speaker_video)
+        listener_video = self._pad_or_crop(listener_video, self.listener_video_features_size)
+        listener_video = self._pad_or_crop_frames(listener_video)
 
-        listener_feat = self._pad_or_crop(listener_video)
-        speaker_feat = self._pad_or_crop(speaker_video)
+        speaker_video = self._pad_or_crop(speaker_video, self.speaker_features_size)
+        speaker_video = self._pad_or_crop_frames(speaker_video)
 
-        # features = torch.stack([listener_feat, speaker_feat], dim=0)  # shape: (2, n_features, frame_length)
-        features = (speaker_feat,listener_feat)
+        listener_audio = self._pad_or_crop_frames(listener_audio)
+        listener_openface = self._pad_or_crop_frames(listener_openface)
+
+        speaker_audio = self._pad_or_crop_frames(speaker_audio)
+        speaker_openface = self._pad_or_crop_frames(speaker_openface)
+
+        listener_feat = listener_video
+        speaker_feat = speaker_audio
+
+        features = (speaker_feat, listener_feat, listener_openface)
+        
         engagement = torch.tensor(float(row["engagement"]), dtype=torch.float32)
         pids = torch.tensor([0, 1], dtype=torch.int64)
 
@@ -269,3 +385,67 @@ class ListenerSpeakerFeatureDataset(Dataset):
         }
 
 
+
+    
+# class ListenerSpeakerFeatureDataset(Dataset):
+#     def __init__(self, csv_path, frame_length=64, root_dir=""):
+#         self.data = pd.read_csv(csv_path)
+#         self.frame_length = frame_length
+#         self.root_dir = root_dir
+
+#     def __len__(self):
+#         return len(self.data)
+
+#     def load_audio_feature_pt(self, path):
+#         full_path = os.path.join(self.root_dir, path)
+#         try:
+#             tensor = torch.load(full_path)
+#             if tensor.ndim == 1:
+#                 tensor = tensor.unsqueeze(0)
+#             return tensor.T if tensor.ndim == 2 else tensor
+#         except Exception as e:
+#             print(f"Error loading audio feature from {full_path}:\n{e}")
+#             raise
+
+#     def load_video_feature_csv(self, path, exclude_cols=META_DATA_COLUMNS):
+#         full_path = os.path.join(self.root_dir, path)
+    
+#         # print(f"Loading video feature from {full_path}")
+#         df = pd.read_csv(full_path)
+#         df = df.loc[:, ~df.columns.isin(exclude_cols)]
+#         return torch.tensor(df.values, dtype=torch.float32)
+
+#     def _pad_or_crop(self, feature_tensor):
+#         n_frames, n_features = feature_tensor.shape
+#         output = torch.zeros((self.frame_length, n_features))
+#         if n_frames >= self.frame_length:
+#             output[:] = feature_tensor[:self.frame_length]
+#         else:
+#             output[:n_frames] = feature_tensor
+#         return output.T  # shape: (n_features, frame_length)
+
+#     def __getitem__(self, idx):
+#         row = self.data.iloc[idx]
+
+#         listener_audio = self.load_audio_feature_pt(row["listener_audio_path"])
+#         listener_video = self.load_video_feature_csv(row["listener_video_path"])
+#         speaker_audio = self.load_audio_feature_pt(row["speaker_audio_path"])
+#         speaker_video = self.load_video_feature_csv(row["speaker_video_path"])
+#         # print(listener_video.shape, speaker_video.shape)
+#         # print(listener_audio.shape, speaker_audio.shape)
+#         listener_feat = listener_video
+#         speaker_feat = speaker_audio
+
+#         listener_feat = self._pad_or_crop(listener_video)
+#         speaker_feat = self._pad_or_crop(speaker_video)
+        
+#         # features = torch.stack([listener_feat, speaker_feat], dim=0)  # shape: (2, n_features, frame_length)
+#         features = (speaker_feat,listener_feat)
+#         engagement = torch.tensor(float(row["engagement"]), dtype=torch.float32)
+#         pids = torch.tensor([0, 1], dtype=torch.int64)
+
+#         return {
+#             "features": features,
+#             "score": engagement,
+#             "pids": pids
+#         }

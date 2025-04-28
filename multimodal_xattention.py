@@ -196,7 +196,7 @@ class EarlyFusion(nn.Module):
             self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "gaze" in i]
         
         if self.config.openfacefeat_extramlp == 1:
-            # Process facial features with MLP to get intermediate representation
+            # Process openface features with MLP
             self.extra_mlp = nn.Sequential(
                 nn.Linear(len(self.filteredcolumns), self.config.openfacefeat_extramlp_dim),
                 (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
@@ -212,7 +212,7 @@ class EarlyFusion(nn.Module):
             dropout=config.dropout
         )
 
-        # Process audio features with MLP to get intermediate representation
+        # Process audio features with MLP
         self.audio_mlp = nn.Sequential(
             nn.Linear(768, config.hidden_size),  # 768 is the audio feature size
             (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
@@ -262,8 +262,5 @@ class EarlyFusion(nn.Module):
         # Combine outputs from both paths
         combined_output = concat_output + attention_output # (B x hidden_size)
 
-        return self.out(combined_output) # (B x num_classes)
-        #############
-    
-
+        return self.out(combined_output) # (B x 1)
 

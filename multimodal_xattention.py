@@ -174,9 +174,9 @@ class EarlyFusion(nn.Module):
         super().__init__()
         self.config = config
 
-        self.MAX_VEC = torch.tensor(MAX_VEC).cuda()
+        self.MAX_VEC = torch.tensor(MAX_VEC, dtype=torch.float32).cuda()
         self.MAX_VEC = torch.maximum(self.MAX_VEC, torch.tensor(1).cuda())
-        self.MIN_VEC = torch.tensor(MIN_VEC).cuda()
+        self.MIN_VEC = torch.tensor(MIN_VEC, dtype=torch.float32).cuda()
 
 
         if self.config.openfacefeat == 0:
@@ -194,23 +194,14 @@ class EarlyFusion(nn.Module):
         elif self.config.openfacefeat == 5:
             # gaze columns 
             self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "gaze" in i]
-        if self.config.openfacefeat_extramlp == 0:
-            self.out = Classifier(in_size=1024+768+768 + len(self.filteredcolumns), hidden_size=config.hidden_size, 
-                              dropout=config.dropout, num_classes=config.num_labels, config = config)
-        else:
-
+        
+        if self.config.openfacefeat_extramlp == 1:
             # Process facial features with MLP to get intermediate representation
             self.extra_mlp = nn.Sequential(
                 nn.Linear(len(self.filteredcolumns), self.config.openfacefeat_extramlp_dim),
                 (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
-            
-            
-            clf_size = 0         
-            # Dimension of ficial features + audio features
-            if self.config.ablation == 8:
-                clf_size = self.config.openfacefeat_extramlp_dim + config.hidden_size
 
-            self.out = Classifier(in_size=clf_size, hidden_size=config.hidden_size, 
+            self.out = Classifier(in_size=config.hidden_size, hidden_size=config.hidden_size, 
                               dropout=config.dropout, num_classes=config.num_labels, config = config)
 
 
@@ -235,39 +226,21 @@ class EarlyFusion(nn.Module):
     def forward(self, audio_paths, openfacefeat_):
 
         B = audio_paths.size(0) # Batch size
-        print(f"audio_paths original shape: {audio_paths.shape}")
+        audio_features = audio_paths.mean(dim=2)
 
-        audio_features = audio_paths.view(B, -1)
-        print(f"audio_features reshaped: {audio_features.shape}")
-
-
-        print("audio_features dtype:", audio_features.dtype)
-        print("openfacefeat_[0] dtype:", openfacefeat_[0].dtype)
         openfacefeat =  [i.mean(0) for i in openfacefeat_]
         openfacefeat = torch.stack(openfacefeat)
-        print("openfacefeat dtype after stack:", openfacefeat.dtype)
-        print("MIN_VEC dtype:", self.MIN_VEC.dtype)
-        print("MAX_VEC dtype:", self.MAX_VEC.dtype)
-
         openfacefeat = openfacefeat.cuda()
-        print("openfacefeat dtype after cuda:", openfacefeat.dtype)
         openfacefeat = (openfacefeat - self.MIN_VEC) / (self.MAX_VEC - self.MIN_VEC)
-        print("openfacefeat dtype after normalization:", openfacefeat.dtype)
         openfacefeat = openfacefeat - 0.5
-        
         openfacefeat_filtered = openfacefeat[:, [OPENFACE_COLUMN_NAMES.index(i) for i in self.filteredcolumns]]
-        print("openfacefeat_filtered dtype:", openfacefeat_filtered.dtype)
-        fusion_vec = []
 
         # Append facial and audio features
-        if self.config.ablation == 8:
-            fusion_vec = []
-            print("extra_mlp weights dtype:", self.extra_mlp[0].weight.dtype)
-            print("openfacefeat_filtered dtype before extra_mlp:", openfacefeat_filtered.dtype)
-            openfacefeat_filtered = self.extra_mlp(openfacefeat_filtered) # (B, hidden_size)
-            audio_intermediate = self.audio_mlp(audio_features) # (B, hidden_size)
-            fusion_vec.append(openfacefeat_filtered)
-            fusion_vec.append(audio_intermediate)
+        fusion_vec = []
+        openfacefeat_filtered = self.extra_mlp(openfacefeat_filtered) # (B, hidden_size)
+        audio_intermediate = self.audio_mlp(audio_features) # (B, hidden_size)
+        fusion_vec.append(openfacefeat_filtered)
+        fusion_vec.append(audio_intermediate)
         
         # Path 1: Concatenation of extracted ficial and audio features followed by MLP
         fusion_vec = torch.cat(fusion_vec, dim=1) # (B, 2 x hidden_size)
@@ -277,7 +250,7 @@ class EarlyFusion(nn.Module):
         # Reshape for attention (seq_len, B, hidden_size)
         facial_attention = openfacefeat_filtered.unsqueeze(0)  # (1 x B x hidden_size)
         audio_attention = audio_intermediate.unsqueeze(0)  # (1 x B x hidden_size)
-        
+
         # Apply cross attention (facial features attending to audio features)
         attention_output, _ = self.cross_attention(
             query=facial_attention,

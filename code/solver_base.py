@@ -10,7 +10,8 @@ from torch.utils.data import DataLoader
 from torchsampler import ImbalancedDatasetSampler
 import torch.nn.functional as F
 from data import MyDataset
-from models.multimodal import EarlyFusion
+#from models.multimodal import EarlyFusion
+from models.multimodal_xattention import EarlyFusion
 from metr import compute_ccc_batched, compute_r2_score_batched, compute_pearson_correlation_batched
 import wandb
 

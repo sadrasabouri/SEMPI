@@ -196,7 +196,7 @@ class EarlyFusion(nn.Module):
             self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "gaze" in i]
         
         if self.config.openfacefeat_extramlp == 1:
-            # Process openface features with MLP
+            # Process facial features with MLP to get intermediate representation
             self.extra_mlp = nn.Sequential(
                 nn.Linear(len(self.filteredcolumns), self.config.openfacefeat_extramlp_dim),
                 (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
@@ -212,7 +212,7 @@ class EarlyFusion(nn.Module):
             dropout=config.dropout
         )
 
-        # Process audio features with MLP
+        # Process audio features with MLP to get intermediate representation
         self.audio_mlp = nn.Sequential(
             nn.Linear(768, config.hidden_size),  # 768 is the audio feature size
             (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
@@ -262,5 +262,193 @@ class EarlyFusion(nn.Module):
         # Combine outputs from both paths
         combined_output = concat_output + attention_output # (B x hidden_size)
 
-        return self.out(combined_output) # (B x 1)
+        return self.out(combined_output) # (B x num_classes)
+        #############
+    
 
+class EarlyFusion2(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+
+        self.out = Classifier(in_size=config.hidden_size, hidden_size=config.hidden_size, 
+                          dropout=config.dropout, num_classes=config.num_labels, config=config)
+
+        # Cross-attention module
+        self.cross_attention = nn.MultiheadAttention(
+            embed_dim=config.hidden_size,
+            num_heads=8,
+            dropout=config.dropout
+        )
+
+        # Process video features with MLP
+        self.video_mlp = nn.Sequential(
+            nn.Linear(1024, config.hidden_size),  # 1024 is the video feature size
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+        # Process audio features with MLP
+        self.audio_mlp = nn.Sequential(
+            nn.Linear(768, config.hidden_size),  # 768 is the audio feature size
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+        
+        # MLP after concatenation
+        self.fusion_mlp = nn.Sequential(
+            nn.Linear(config.hidden_size * 2, config.hidden_size),
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+        
+    def forward(self, audio_paths, video_paths):
+        B = audio_paths.size(0)  # Batch size
+        audio_features = audio_paths.mean(dim=2)
+
+        if video_paths.dim() > 2:
+            video_features = video_paths.mean(dim=2)
+
+        # Process video features
+        video_intermediate = self.video_mlp(video_features)  # (B, hidden_size)
+        
+        # Process audio features
+        audio_intermediate = self.audio_mlp(audio_features)  # (B, hidden_size)
+        
+        # Append video and audio features
+        fusion_vec = []
+        fusion_vec.append(video_intermediate)
+        fusion_vec.append(audio_intermediate)
+        
+        # Path 1: Concatenation followed by MLP
+        fusion_vec = torch.cat(fusion_vec, dim=1)  # (B, 2 x hidden_size)
+        concat_output = self.fusion_mlp(fusion_vec)  # (B, hidden_size)
+
+        # Path 2: Cross-attention between video and audio features
+        # Reshape for attention (seq_len, B, hidden_size)
+        video_attention = video_intermediate.unsqueeze(0)  # (1 x B x hidden_size)
+        audio_attention = audio_intermediate.unsqueeze(0)  # (1 x B x hidden_size)
+
+        # Apply cross attention (video features attending to audio features)
+        attention_output, _ = self.cross_attention(
+            query=video_attention,
+            key=audio_attention,
+            value=audio_attention
+        )
+        attention_output = attention_output.squeeze(0)  # (B x hidden_size)
+
+        # Combine outputs from both paths
+        combined_output = concat_output + attention_output  # (B x hidden_size)
+
+        return self.out(combined_output)  # (B x num_classes)
+    
+
+class EarlyFusion3(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+
+        self.MAX_VEC = torch.tensor(MAX_VEC, dtype=torch.float32).cuda()
+        self.MAX_VEC = torch.maximum(self.MAX_VEC, torch.tensor(1).cuda())
+        self.MIN_VEC = torch.tensor(MIN_VEC, dtype=torch.float32).cuda()
+
+
+        if self.config.openfacefeat == 0:
+            self.filteredcolumns = []
+        if self.config.openfacefeat == 1:
+            #all features
+            self.filteredcolumns = OPENFACE_COLUMN_NAMES
+        elif self.config.openfacefeat == 2:
+            self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "AU" in i]
+        elif self.config.openfacefeat == 3:
+            self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "pose" in i]
+        elif self.config.openfacefeat == 4:
+            #pose and aus
+            self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "pose" in i] + [i for i in OPENFACE_COLUMN_NAMES if "AU" in i]
+        elif self.config.openfacefeat == 5:
+            # gaze columns 
+            self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "gaze" in i]
+        
+        if self.config.openfacefeat_extramlp == 1:
+            # Process facial features with MLP to get intermediate representation
+            self.extra_mlp = nn.Sequential(
+                nn.Linear(len(self.filteredcolumns), self.config.openfacefeat_extramlp_dim),
+                (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+            self.out = Classifier(in_size=config.hidden_size, hidden_size=config.hidden_size, 
+                              dropout=config.dropout, num_classes=config.num_labels, config = config)
+
+        # Cross-attention module
+        self.cross_attention = nn.MultiheadAttention(
+            embed_dim=config.hidden_size,
+            num_heads=8,
+            dropout=config.dropout
+        )
+
+        # Process video features with MLP to get intermediate representation
+        self.video_mlp = nn.Sequential(
+            nn.Linear(1024, config.hidden_size),  # 1024 is the video feature size
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+        # Process audio features with MLP to get intermediate representation
+        self.audio_mlp = nn.Sequential(
+            nn.Linear(768, config.hidden_size),  # 768 is the audio feature size
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+        
+        # MLP before cross attention
+        self.fusion_mlp = nn.Sequential(
+            nn.Linear(config.hidden_size * 2, config.hidden_size),
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+        
+        # MLP after concatenation of intermediate features
+        self.fusion_mlp2 = nn.Sequential(
+            nn.Linear(config.hidden_size * 3, config.hidden_size),
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+        
+
+    def forward(self, audio_paths, openfacefeat_, video_paths):
+
+        B = audio_paths.size(0) # Batch size
+        audio_features = audio_paths.mean(dim=2)
+
+        openfacefeat =  [i.mean(0) for i in openfacefeat_]
+        openfacefeat = torch.stack(openfacefeat)
+        openfacefeat = openfacefeat.cuda()
+        openfacefeat = (openfacefeat - self.MIN_VEC) / (self.MAX_VEC - self.MIN_VEC)
+        openfacefeat = openfacefeat - 0.5
+        openfacefeat_filtered = openfacefeat[:, [OPENFACE_COLUMN_NAMES.index(i) for i in self.filteredcolumns]]
+
+        if video_paths.dim() > 2:
+            video_features = video_paths.mean(dim=2)  # Average across time dimension if present
+
+        # Append video, facial, and audio features
+        fusion_vec = []
+        video_intermediate = self.video_mlp(video_features)  # (B, hidden_size)
+        openfacefeat_filtered = self.extra_mlp(openfacefeat_filtered) # (B, hidden_size)
+        audio_intermediate = self.audio_mlp(audio_features) # (B, hidden_size)
+        fusion_vec.append(video_intermediate)
+        fusion_vec.append(openfacefeat_filtered)
+        fusion_vec.append(audio_intermediate)
+      
+        # Path 1: Concatenation followed by MLP
+        fusion_vec = torch.cat(fusion_vec, dim=1)  # (B, 3 x hidden_size)
+        concat_output = self.fusion_mlp2(fusion_vec)  # (B, hidden_size)
+
+        # Path 2: Cross-attention between video and audio features
+        fusion_attention = []
+        fusion_attention.append(video_intermediate)
+        fusion_attention.append(openfacefeat_filtered)
+        fusion_attention = torch.cat(fusion_attention, dim=1) # (B, 2 x hidden_size)
+        attention_input = self.fusion_mlp(fusion_attention)  # (B, hidden_size)
+
+        # Reshape for attention (seq_len, B, hidden_size)
+        video_openface_attention = attention_input.unsqueeze(0)  # (1 x B x hidden_size)
+        audio_attention = audio_intermediate.unsqueeze(0)  # (1 x B x hidden_size)
+
+        # Apply cross attention (video+facial features attending to audio features)
+        attention_output, _ = self.cross_attention(
+            query=video_openface_attention,
+            key=audio_attention,
+            value=audio_attention
+        )
+        attention_output = attention_output.squeeze(0)  # (B x hidden_size)
+
+        # Combine outputs from both paths
+        combined_output = concat_output + attention_output # (B x hidden_size)
+
+        return self.out(combined_output) # (B x num_classes)
+        #############

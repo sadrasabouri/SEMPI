@@ -1,0 +1,61 @@
+# (pool_factor=0, hidden_size=64) Total trainable parameters: 127,553
+# Epoch 1/20 | Train Loss: 0.0182
+                                                              
+# | Val Loss: 0.0176 | Val CCC: 0.1390 | Val PCC: 0.2459
+# Epoch 2/20 | Train Loss: 0.0157
+                                                              
+# | Val Loss: 0.0184 | Val CCC: 0.1563 | Val PCC: 0.2579
+# Epoch 3/20 | Train Loss: 0.0151
+                                                              
+# | Val Loss: 0.0181 | Val CCC: 0.1899 | Val PCC: 0.2753
+# Epoch 4/20 | Train Loss: 0.0141
+                                                              
+# | Val Loss: 0.0193 | Val CCC: 0.1934 | Val PCC: 0.2789
+# Epoch 5/20 | Train Loss: 0.0135
+                                                              
+# | Val Loss: 0.0184 | Val CCC: 0.2182 | Val PCC: 0.2828
+# Epoch 6/20 | Train Loss: 0.0132
+                                                              
+# | Val Loss: 0.0182 | Val CCC: 0.2334 | Val PCC: 0.3095
+# Epoch 7/20 | Train Loss: 0.0122
+                                                              
+# | Val Loss: 0.0176 | Val CCC: 0.2443 | Val PCC: 0.3036
+# Epoch 8/20 | Train Loss: 0.0115
+                                                              
+# | Val Loss: 0.0188 | Val CCC: 0.2702 | Val PCC: 0.3022
+# Epoch 9/20 | Train Loss: 0.0117
+                                                              
+# | Val Loss: 0.0187 | Val CCC: 0.2351 | Val PCC: 0.2842
+# Epoch 10/20 | Train Loss: 0.0108
+                                                               
+# | Val Loss: 0.0192 | Val CCC: 0.2544 | Val PCC: 0.2850
+# Epoch 11/20 | Train Loss: 0.0107
+                                                               
+# | Val Loss: 0.0208 | Val CCC: 0.1931 | Val PCC: 0.2499
+# Epoch 12/20 | Train Loss: 0.0105
+                                                               
+# | Val Loss: 0.0186 | Val CCC: 0.2438 | Val PCC: 0.2834
+# Epoch 13/20 | Train Loss: 0.0102
+                                                               
+# | Val Loss: 0.0196 | Val CCC: 0.2799 | Val PCC: 0.3005
+# Epoch 14/20 | Train Loss: 0.0098
+                                                               
+# | Val Loss: 0.0205 | Val CCC: 0.2646 | Val PCC: 0.2840
+# Epoch 15/20 | Train Loss: 0.0100
+                                                               
+# | Val Loss: 0.0208 | Val CCC: 0.2808 | Val PCC: 0.2930
+# Epoch 16/20 | Train Loss: 0.0099
+                                                               
+# | Val Loss: 0.0200 | Val CCC: 0.2481 | Val PCC: 0.2743
+# Epoch 17/20 | Train Loss: 0.0096
+                                                               
+# | Val Loss: 0.0204 | Val CCC: 0.2452 | Val PCC: 0.2757
+# Epoch 18/20 | Train Loss: 0.0097
+                                                               
+# | Val Loss: 0.0214 | Val CCC: 0.2121 | Val PCC: 0.2379
+# Epoch 19/20 | Train Loss: 0.0095
+                                                               
+# | Val Loss: 0.0205 | Val CCC: 0.2708 | Val PCC: 0.2862
+# Epoch 20/20 | Train Loss: 0.0093
+                                                               
+# | Val Loss: 0.0200 | Val CCC: 0.2343 | Val PCC: 0.2584

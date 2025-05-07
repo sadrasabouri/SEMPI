@@ -1,0 +1,61 @@
+# (pool_factor=4, hidden_size=16) Total trainable parameters: 423,521
+# Epoch 1/20 - Loss: 0.0232
+                                                              
+# | Val Loss: 0.0184 | Val CCC: 0.1773 | Val PCC: 0.2720
+# Epoch 2/20 - Loss: 0.0160
+                                                              
+# | Val Loss: 0.0193 | Val CCC: 0.1810 | Val PCC: 0.2489
+# Epoch 3/20 - Loss: 0.0142
+                                                              
+# | Val Loss: 0.0184 | Val CCC: 0.2481 | Val PCC: 0.3306
+# Epoch 4/20 - Loss: 0.0137
+                                                              
+# | Val Loss: 0.0182 | Val CCC: 0.2443 | Val PCC: 0.3132
+# Epoch 5/20 - Loss: 0.0128
+                                                              
+# | Val Loss: 0.0192 | Val CCC: 0.2234 | Val PCC: 0.2802
+# Epoch 6/20 - Loss: 0.0123
+                                                              
+# | Val Loss: 0.0179 | Val CCC: 0.2608 | Val PCC: 0.3306
+# Epoch 7/20 - Loss: 0.0120
+                                                              
+# | Val Loss: 0.0177 | Val CCC: 0.2910 | Val PCC: 0.3534
+# Epoch 8/20 - Loss: 0.0117
+                                                              
+# | Val Loss: 0.0179 | Val CCC: 0.2459 | Val PCC: 0.3273
+# Epoch 9/20 - Loss: 0.0110
+                                                              
+# | Val Loss: 0.0191 | Val CCC: 0.3220 | Val PCC: 0.3497
+# Epoch 10/20 - Loss: 0.0112
+                                                              
+# | Val Loss: 0.0178 | Val CCC: 0.3414 | Val PCC: 0.3824
+# Epoch 11/20 - Loss: 0.0109
+                                                               
+# | Val Loss: 0.0186 | Val CCC: 0.3180 | Val PCC: 0.3590
+# Epoch 12/20 - Loss: 0.0109
+                                                               
+# | Val Loss: 0.0193 | Val CCC: 0.2840 | Val PCC: 0.3212
+# Epoch 13/20 - Loss: 0.0107
+                                                               
+# | Val Loss: 0.0189 | Val CCC: 0.3038 | Val PCC: 0.3406
+# Epoch 14/20 - Loss: 0.0106
+                                                               
+# | Val Loss: 0.0178 | Val CCC: 0.2719 | Val PCC: 0.3473
+# Epoch 15/20 - Loss: 0.0108
+                                                               
+# | Val Loss: 0.0179 | Val CCC: 0.3008 | Val PCC: 0.3537
+# Epoch 16/20 - Loss: 0.0106
+                                                               
+# | Val Loss: 0.0180 | Val CCC: 0.2978 | Val PCC: 0.3520
+# Epoch 17/20 - Loss: 0.0104
+                                                               
+# | Val Loss: 0.0180 | Val CCC: 0.3420 | Val PCC: 0.3783
+# Epoch 18/20 - Loss: 0.0103
+                                                               
+# | Val Loss: 0.0183 | Val CCC: 0.2857 | Val PCC: 0.3388
+# Epoch 19/20 - Loss: 0.0102
+                                                               
+# | Val Loss: 0.0185 | Val CCC: 0.3305 | Val PCC: 0.3645
+# Epoch 20/20 - Loss: 0.0103
+                                                               
+# | Val Loss: 0.0188 | Val CCC: 0.3625 | Val PCC: 0.3840

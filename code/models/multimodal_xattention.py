@@ -1,11 +1,18 @@
 import torch
 import torch.nn as nn
 
+<<<<<<< HEAD
 from models.pytorch_i3d import InceptionI3d
 from models.hubert import HubertBase, HubertLarge
 from transformers import RobertaModel, RobertaTokenizer
 
 from data import OPENFACE_COLUMN_NAMES
+=======
+from transformers import RobertaModel, RobertaTokenizer
+
+OPENFACE_COLUMN_NAMES = ['gaze_0_x', 'gaze_0_y', 'gaze_0_z', 'gaze_1_x', 'gaze_1_y', 'gaze_1_z', 'gaze_angle_x', 'gaze_angle_y', 'eye_lmk_x_0', 'eye_lmk_x_1', 'eye_lmk_x_2', 'eye_lmk_x_3', 'eye_lmk_x_4', 'eye_lmk_x_5', 'eye_lmk_x_6', 'eye_lmk_x_7', 'eye_lmk_x_8', 'eye_lmk_x_9', 'eye_lmk_x_10', 'eye_lmk_x_11', 'eye_lmk_x_12', 'eye_lmk_x_13', 'eye_lmk_x_14', 'eye_lmk_x_15', 'eye_lmk_x_16', 'eye_lmk_x_17', 'eye_lmk_x_18', 'eye_lmk_x_19', 'eye_lmk_x_20', 'eye_lmk_x_21', 'eye_lmk_x_22', 'eye_lmk_x_23', 'eye_lmk_x_24', 'eye_lmk_x_25', 'eye_lmk_x_26', 'eye_lmk_x_27', 'eye_lmk_x_28', 'eye_lmk_x_29', 'eye_lmk_x_30', 'eye_lmk_x_31', 'eye_lmk_x_32', 'eye_lmk_x_33', 'eye_lmk_x_34', 'eye_lmk_x_35', 'eye_lmk_x_36', 'eye_lmk_x_37', 'eye_lmk_x_38', 'eye_lmk_x_39', 'eye_lmk_x_40', 'eye_lmk_x_41', 'eye_lmk_x_42', 'eye_lmk_x_43', 'eye_lmk_x_44', 'eye_lmk_x_45', 'eye_lmk_x_46', 'eye_lmk_x_47', 'eye_lmk_x_48', 'eye_lmk_x_49', 'eye_lmk_x_50', 'eye_lmk_x_51', 'eye_lmk_x_52', 'eye_lmk_x_53', 'eye_lmk_x_54', 'eye_lmk_x_55', 'eye_lmk_y_0', 'eye_lmk_y_1', 'eye_lmk_y_2', 'eye_lmk_y_3', 'eye_lmk_y_4', 'eye_lmk_y_5', 'eye_lmk_y_6', 'eye_lmk_y_7', 'eye_lmk_y_8', 'eye_lmk_y_9', 'eye_lmk_y_10', 'eye_lmk_y_11', 'eye_lmk_y_12', 'eye_lmk_y_13', 'eye_lmk_y_14', 'eye_lmk_y_15', 'eye_lmk_y_16', 'eye_lmk_y_17', 'eye_lmk_y_18', 'eye_lmk_y_19', 'eye_lmk_y_20', 'eye_lmk_y_21', 'eye_lmk_y_22', 'eye_lmk_y_23', 'eye_lmk_y_24', 'eye_lmk_y_25', 'eye_lmk_y_26', 'eye_lmk_y_27', 'eye_lmk_y_28', 'eye_lmk_y_29', 'eye_lmk_y_30', 'eye_lmk_y_31', 'eye_lmk_y_32', 'eye_lmk_y_33', 'eye_lmk_y_34', 'eye_lmk_y_35', 'eye_lmk_y_36', 'eye_lmk_y_37', 'eye_lmk_y_38', 'eye_lmk_y_39', 'eye_lmk_y_40', 'eye_lmk_y_41', 'eye_lmk_y_42', 'eye_lmk_y_43', 'eye_lmk_y_44', 'eye_lmk_y_45', 'eye_lmk_y_46', 'eye_lmk_y_47', 'eye_lmk_y_48', 'eye_lmk_y_49', 'eye_lmk_y_50', 'eye_lmk_y_51', 'eye_lmk_y_52', 'eye_lmk_y_53', 'eye_lmk_y_54', 'eye_lmk_y_55', 'eye_lmk_X_0', 'eye_lmk_X_1', 'eye_lmk_X_2', 'eye_lmk_X_3', 'eye_lmk_X_4', 'eye_lmk_X_5', 'eye_lmk_X_6', 'eye_lmk_X_7', 'eye_lmk_X_8', 'eye_lmk_X_9', 'eye_lmk_X_10', 'eye_lmk_X_11', 'eye_lmk_X_12', 'eye_lmk_X_13', 'eye_lmk_X_14', 'eye_lmk_X_15', 'eye_lmk_X_16', 'eye_lmk_X_17', 'eye_lmk_X_18', 'eye_lmk_X_19', 'eye_lmk_X_20', 'eye_lmk_X_21', 'eye_lmk_X_22', 'eye_lmk_X_23', 'eye_lmk_X_24', 'eye_lmk_X_25', 'eye_lmk_X_26', 'eye_lmk_X_27', 'eye_lmk_X_28', 'eye_lmk_X_29', 'eye_lmk_X_30', 'eye_lmk_X_31', 'eye_lmk_X_32', 'eye_lmk_X_33', 'eye_lmk_X_34', 'eye_lmk_X_35', 'eye_lmk_X_36', 'eye_lmk_X_37', 'eye_lmk_X_38', 'eye_lmk_X_39', 'eye_lmk_X_40', 'eye_lmk_X_41', 'eye_lmk_X_42', 'eye_lmk_X_43', 'eye_lmk_X_44', 'eye_lmk_X_45', 'eye_lmk_X_46', 'eye_lmk_X_47', 'eye_lmk_X_48', 'eye_lmk_X_49', 'eye_lmk_X_50', 'eye_lmk_X_51', 'eye_lmk_X_52', 'eye_lmk_X_53', 'eye_lmk_X_54', 'eye_lmk_X_55', 'eye_lmk_Y_0', 'eye_lmk_Y_1', 'eye_lmk_Y_2', 'eye_lmk_Y_3', 'eye_lmk_Y_4', 'eye_lmk_Y_5', 'eye_lmk_Y_6', 'eye_lmk_Y_7', 'eye_lmk_Y_8', 'eye_lmk_Y_9', 'eye_lmk_Y_10', 'eye_lmk_Y_11', 'eye_lmk_Y_12', 'eye_lmk_Y_13', 'eye_lmk_Y_14', 'eye_lmk_Y_15', 'eye_lmk_Y_16', 'eye_lmk_Y_17', 'eye_lmk_Y_18', 'eye_lmk_Y_19', 'eye_lmk_Y_20', 'eye_lmk_Y_21', 'eye_lmk_Y_22', 'eye_lmk_Y_23', 'eye_lmk_Y_24', 'eye_lmk_Y_25', 'eye_lmk_Y_26', 'eye_lmk_Y_27', 'eye_lmk_Y_28', 'eye_lmk_Y_29', 'eye_lmk_Y_30', 'eye_lmk_Y_31', 'eye_lmk_Y_32', 'eye_lmk_Y_33', 'eye_lmk_Y_34', 'eye_lmk_Y_35', 'eye_lmk_Y_36', 'eye_lmk_Y_37', 'eye_lmk_Y_38', 'eye_lmk_Y_39', 'eye_lmk_Y_40', 'eye_lmk_Y_41', 'eye_lmk_Y_42', 'eye_lmk_Y_43', 'eye_lmk_Y_44', 'eye_lmk_Y_45', 'eye_lmk_Y_46', 'eye_lmk_Y_47', 'eye_lmk_Y_48', 'eye_lmk_Y_49', 'eye_lmk_Y_50', 'eye_lmk_Y_51', 'eye_lmk_Y_52', 'eye_lmk_Y_53', 'eye_lmk_Y_54', 'eye_lmk_Y_55', 'eye_lmk_Z_0', 'eye_lmk_Z_1', 'eye_lmk_Z_2', 'eye_lmk_Z_3', 'eye_lmk_Z_4', 'eye_lmk_Z_5', 'eye_lmk_Z_6', 'eye_lmk_Z_7', 'eye_lmk_Z_8', 'eye_lmk_Z_9', 'eye_lmk_Z_10', 'eye_lmk_Z_11', 'eye_lmk_Z_12', 'eye_lmk_Z_13', 'eye_lmk_Z_14', 'eye_lmk_Z_15', 'eye_lmk_Z_16', 'eye_lmk_Z_17', 'eye_lmk_Z_18', 'eye_lmk_Z_19', 'eye_lmk_Z_20', 'eye_lmk_Z_21', 'eye_lmk_Z_22', 'eye_lmk_Z_23', 'eye_lmk_Z_24', 'eye_lmk_Z_25', 'eye_lmk_Z_26', 'eye_lmk_Z_27', 'eye_lmk_Z_28', 'eye_lmk_Z_29', 'eye_lmk_Z_30', 'eye_lmk_Z_31', 'eye_lmk_Z_32', 'eye_lmk_Z_33', 'eye_lmk_Z_34', 'eye_lmk_Z_35', 'eye_lmk_Z_36', 'eye_lmk_Z_37', 'eye_lmk_Z_38', 'eye_lmk_Z_39', 'eye_lmk_Z_40', 'eye_lmk_Z_41', 'eye_lmk_Z_42', 'eye_lmk_Z_43', 'eye_lmk_Z_44', 'eye_lmk_Z_45', 'eye_lmk_Z_46', 'eye_lmk_Z_47', 'eye_lmk_Z_48', 'eye_lmk_Z_49', 'eye_lmk_Z_50', 'eye_lmk_Z_51', 'eye_lmk_Z_52', 'eye_lmk_Z_53', 'eye_lmk_Z_54', 'eye_lmk_Z_55', 'pose_Tx', 'pose_Ty', 'pose_Tz', 'pose_Rx', 'pose_Ry', 'pose_Rz', 'AU01_r', 'AU02_r', 'AU04_r', 'AU05_r', 'AU06_r', 'AU07_r', 'AU09_r', 'AU10_r', 'AU12_r', 'AU14_r', 'AU15_r', 'AU17_r', 'AU20_r', 'AU23_r', 'AU25_r', 'AU26_r', 'AU45_r', 'AU01_c', 'AU02_c', 'AU04_c', 'AU05_c', 'AU06_c', 'AU07_c', 'AU09_c', 'AU10_c', 'AU12_c', 'AU14_c', 'AU15_c', 'AU17_c', 'AU20_c', 'AU23_c', 'AU25_c', 'AU26_c', 'AU28_c', 'AU45_c']
+
+>>>>>>> origin-sadra/Method2FinalModel
 class Classifier(nn.Module):
     def __init__(self, in_size, hidden_size, dropout, num_classes, config):
         super().__init__()
@@ -167,6 +174,7 @@ MIN_VEC = np.array([ 7.0334e-02, -3.5600e-02, -9.9080e-01, -1.3505e-01, -7.9919e
          0.0000e+00,  0.0000e+00,  0.0000e+00,  0.0000e+00,  0.0000e+00,
          0.0000e+00,  0.0000e+00,  0.0000e+00,  0.0000e+00,  0.0000e+00,
          0.0000e+00,  0.0000e+00,  0.0000e+00,  0.0000e+00])
+<<<<<<< HEAD
 class EarlyFusion(nn.Module):
     def __init__(self, config):
         super().__init__()
@@ -244,6 +252,22 @@ class EarlyFusion(nn.Module):
             # freeze text encoder
             for param in self.text_enc.parameters():
                 param.requires_grad = False
+=======
+
+
+
+class EarlyFusion(nn.Module):
+    def __init__(self, config, pooling_factor=8):
+        super().__init__()
+        self.config = config
+        self.pooling_factor = pooling_factor
+        self.sub_frame_size = 64 // pooling_factor
+
+        self.MAX_VEC = torch.tensor(MAX_VEC, dtype=torch.float32).cuda()
+        self.MAX_VEC = torch.maximum(self.MAX_VEC, torch.tensor(1).cuda())
+        self.MIN_VEC = torch.tensor(MIN_VEC, dtype=torch.float32).cuda()
+
+>>>>>>> origin-sadra/Method2FinalModel
 
         if self.config.openfacefeat == 0:
             self.filteredcolumns = []
@@ -260,6 +284,7 @@ class EarlyFusion(nn.Module):
         elif self.config.openfacefeat == 5:
             # gaze columns 
             self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "gaze" in i]
+<<<<<<< HEAD
         if self.config.openfacefeat_extramlp == 0:
             self.out = Classifier(in_size=1024+768+768 + len(self.filteredcolumns), hidden_size=config.hidden_size, 
                               dropout=config.dropout, num_classes=config.num_labels, config = config)
@@ -296,18 +321,252 @@ class EarlyFusion(nn.Module):
 
         #############
         # CSCI535 Project: Additional modules
+=======
+        
+        # Process facial features with MLP to get intermediate representation
+        self.openface_mlp = nn.Sequential(
+            nn.Linear(len(self.filteredcolumns), self.config.hidden_size),
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+        # Process audio features with MLP to get intermediate representation
+        self.audio_mlp = nn.Sequential(
+            nn.Linear(768, config.hidden_size),  # 768 is the audio feature size
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+>>>>>>> origin-sadra/Method2FinalModel
         # Cross-attention module
         self.cross_attention = nn.MultiheadAttention(
             embed_dim=config.hidden_size,
             num_heads=8,
+<<<<<<< HEAD
             dropout=config.dropout
         )
+=======
+            dropout=config.dropout,
+            batch_first=True
+        )
+        
+        # MLP after concatenation of intermediate features
+        self.fusion_mlp = nn.Sequential(
+            nn.Linear(config.hidden_size * 2 * self.sub_frame_size, config.hidden_size * self.sub_frame_size),
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+        self.out = Classifier(in_size=config.hidden_size * self.sub_frame_size, hidden_size=config.hidden_size, 
+                        dropout=config.dropout, num_classes=config.num_labels, config=config)
+
+
+    def forward(self, audio_paths, openfacefeat_):
+        B = audio_paths.size(0) # Batch size
+        # For audio:
+        audio_paths = audio_paths.transpose(1, 2)  # [B, 64, 768]
+        audio_features = audio_paths.reshape(
+            B, 
+            self.sub_frame_size,
+            audio_paths.size(1) // self.sub_frame_size,
+            audio_paths.size(2)
+        ).mean(dim=2)  # [B, 8, 768]
+
+        # For OpenFace:
+        stacked_openface = torch.stack([of.transpose(0, 1) for of in openfacefeat_])  # [B, 64, 329]
+        openfacefeat = stacked_openface.reshape(
+            B,
+            self.sub_frame_size,
+            stacked_openface.size(1) // self.sub_frame_size,
+            stacked_openface.size(2)
+        ).mean(dim=2)  # [B, 8, 329]
+
+        openfacefeat = openfacefeat.cuda()
+        openfacefeat = (openfacefeat - self.MIN_VEC) / (self.MAX_VEC - self.MIN_VEC)
+        openfacefeat = openfacefeat - 0.5
+        openfacefeat_filtered = openfacefeat[:, :, [OPENFACE_COLUMN_NAMES.index(i) for i in self.filteredcolumns]]
+
+        # Process features through MLPs
+        processed_openface_features = []
+        processed_audio_features = []
+        
+        for i in range(self.sub_frame_size):
+            # Process each temporal slice
+            openface_slice = self.openface_mlp(openfacefeat_filtered[:, i, :])
+            audio_slice = self.audio_mlp(audio_features[:, i, :])
+            
+            processed_openface_features.append(openface_slice) # [B, sub_frame_size, hidden_size]
+            processed_audio_features.append(audio_slice) # [B, sub_frame_size, hidden_size]
+    
+        # Stack processed features
+        processed_openface = torch.cat(processed_openface_features, dim=1)  # [B, hidden_size * sub_frame_size]
+        processed_audio = torch.cat(processed_audio_features, dim=1)  # [B, hidden_size * sub_frame_size]
+
+        # Path 1: Concatenation and MLP
+        fusion_vec = torch.cat([processed_openface, processed_audio], dim=1)  # [B, 2 * hidden_size * sub_frame_size]
+        concat_output = self.fusion_mlp(fusion_vec)  # [B, hidden_size * sub_frame_size]
+
+        # Path 2: Cross-attention
+        # Reshape for nn.MultiheadAttention with batch_first=True: [batch_size, seq_len, embed_dim]
+        openface_reshaped = processed_openface.view(B, self.sub_frame_size, -1)  # [B, sub_frame_size, hidden_size]
+        audio_reshaped = processed_audio.view(B, self.sub_frame_size, -1)  # [B, sub_frame_size, hidden_size]
+
+        # Apply cross-attention (with batch_first=True)
+        attn_output, _ = self.cross_attention(
+            query=openface_reshaped,
+            key=audio_reshaped,
+            value=audio_reshaped
+        )
+
+        # Reshape back to match concat_output (no permutation needed)
+        attention_output = attn_output.reshape(B, -1)  # [B, hidden_size * sub_frame_size]
+
+        # Combine outputs from both paths
+        combined_output = concat_output + attention_output  # [B, hidden_size * sub_frame_size]
+
+        # Final classification
+        return self.out(combined_output)  # [B, num_classes]
+
+    
+
+class EarlyFusion2(nn.Module):
+    def __init__(self, config, pooling_factor=8):
+        super().__init__()
+        self.config = config
+        self.pooling_factor = pooling_factor
+        self.sub_frame_size = 64 // pooling_factor
+
+        # Process video features with MLP
+        self.video_mlp = nn.Sequential(
+            nn.Linear(1024, config.hidden_size),  # 1024 is the video feature size
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+        # Process audio features with MLP
+        self.audio_mlp = nn.Sequential(
+            nn.Linear(768, config.hidden_size),  # 768 is the audio feature size
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+        # Cross-attention module
+        self.cross_attention = nn.MultiheadAttention(
+            embed_dim=config.hidden_size,
+            num_heads=8,
+            dropout=config.dropout,
+            batch_first=True
+        )
+
+        # MLP after concatenation
+        self.fusion_mlp = nn.Sequential(
+            nn.Linear(config.hidden_size * 2 * self.sub_frame_size, config.hidden_size * self.sub_frame_size),
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+        self.out = Classifier(in_size=config.hidden_size * self.sub_frame_size, hidden_size=config.hidden_size, 
+                          dropout=config.dropout, num_classes=config.num_labels, config=config)
+
+        
+    def forward(self, audio_paths, video_paths):
+        B = audio_paths.size(0)  # Batch size
+
+        # For audio:
+        audio_paths = audio_paths.transpose(1, 2)  # [B, 64, 768]
+        audio_features = audio_paths.reshape(
+            B, 
+            self.sub_frame_size,
+            audio_paths.size(1) // self.sub_frame_size,
+            audio_paths.size(2)
+        ).mean(dim=2)  # [B, 8, 768]
+
+        # For video:
+        video_paths = video_paths.transpose(1, 2)  # [B, 64, 1024]
+        video_features = video_paths.reshape(
+            B, 
+            self.sub_frame_size,
+            video_paths.size(1) // self.sub_frame_size,
+            video_paths.size(2)
+        ).mean(dim=2)  # [B, 8, 1024]
+
+        # Process features through MLPs
+        processed_video_features = []
+        processed_audio_features = []
+
+        for i in range(self.sub_frame_size):
+            # Process each temporal slice
+            video_slice = self.video_mlp(video_features[:, i, :])
+            audio_slice = self.audio_mlp(audio_features[:, i, :])
+            
+            processed_video_features.append(video_slice) # [B, sub_frame_size, hidden_size]
+            processed_audio_features.append(audio_slice) # [B, sub_frame_size, hidden_size]
+
+        # Stack processed features
+        processed_video = torch.cat(processed_video_features, dim=1)  # [B, hidden_size * sub_frame_size]
+        processed_audio = torch.cat(processed_audio_features, dim=1)  # [B, hidden_size * sub_frame_size]
+
+        # Path 1: Concatenation and MLP
+        fusion_vec = torch.cat([processed_video, processed_audio], dim=1)  # [B, 2 * hidden_size * sub_frame_size]
+        concat_output = self.fusion_mlp(fusion_vec)  # [B, hidden_size * sub_frame_size]
+
+        # Path 2: Cross-attention
+        # Reshape for nn.MultiheadAttention with batch_first=True: [batch_size, seq_len, embed_dim]
+        video_reshaped = processed_video.view(B, self.sub_frame_size, -1)  # [B, sub_frame_size, hidden_size]
+        audio_reshaped = processed_audio.view(B, self.sub_frame_size, -1)  # [B, sub_frame_size, hidden_size]
+
+        # Apply cross-attention (with batch_first=True)
+        attn_output, _ = self.cross_attention(
+            query=video_reshaped,
+            key=audio_reshaped,
+            value=audio_reshaped
+        )
+
+        # Reshape back to match concat_output (no permutation needed)
+        attention_output = attn_output.reshape(B, -1)  # [B, hidden_size * sub_frame_size]
+
+        # Combine outputs from both paths
+        combined_output = concat_output + attention_output  # [B, hidden_size * sub_frame_size]
+
+        # Final classification
+        return self.out(combined_output)  # [B, num_classes]
+    
+
+
+class EarlyFusion3(nn.Module):
+    def __init__(self, config, pooling_factor=8):
+        super().__init__()
+        self.config = config
+        self.pooling_factor = pooling_factor
+        self.sub_frame_size = 64 // pooling_factor
+
+        self.MAX_VEC = torch.tensor(MAX_VEC, dtype=torch.float32).cuda()
+        self.MAX_VEC = torch.maximum(self.MAX_VEC, torch.tensor(1).cuda())
+        self.MIN_VEC = torch.tensor(MIN_VEC, dtype=torch.float32).cuda()
+
+
+        if self.config.openfacefeat == 0:
+            self.filteredcolumns = []
+        if self.config.openfacefeat == 1:
+            #all features
+            self.filteredcolumns = OPENFACE_COLUMN_NAMES
+        elif self.config.openfacefeat == 2:
+            self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "AU" in i]
+        elif self.config.openfacefeat == 3:
+            self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "pose" in i]
+        elif self.config.openfacefeat == 4:
+            #pose and aus
+            self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "pose" in i] + [i for i in OPENFACE_COLUMN_NAMES if "AU" in i]
+        elif self.config.openfacefeat == 5:
+            # gaze columns 
+            self.filteredcolumns = [i for i in OPENFACE_COLUMN_NAMES if "gaze" in i]
+        
+
+        # Process video features with MLP to get intermediate representation
+        self.video_mlp = nn.Sequential(
+            nn.Linear(1024, config.hidden_size),  # 1024 is the video feature size
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+
+        # Process facial features with MLP to get intermediate representation
+        self.openface_mlp = nn.Sequential(
+            nn.Linear(len(self.filteredcolumns), self.config.hidden_size),
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+>>>>>>> origin-sadra/Method2FinalModel
 
         # Process audio features with MLP to get intermediate representation
         self.audio_mlp = nn.Sequential(
             nn.Linear(768, config.hidden_size),  # 768 is the audio feature size
             (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
         
+<<<<<<< HEAD
         # MLP after concatenation of intermediate features
         self.fusion_mlp = nn.Sequential(
             nn.Linear(config.hidden_size * 2, config.hidden_size),
@@ -390,3 +649,195 @@ class EarlyFusion(nn.Module):
     
 
 
+=======
+        # Cross-attention module
+        self.cross_attention = nn.MultiheadAttention(
+            embed_dim=config.hidden_size,
+            num_heads=8,
+            dropout=config.dropout,
+            batch_first=True
+        )
+        
+        # MLP before cross attention
+        self.fusion_mlp = nn.Sequential(
+            nn.Linear(config.hidden_size * 2 * self.sub_frame_size, config.hidden_size * self.sub_frame_size),
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+        
+        # MLP after concatenation of intermediate features
+        self.fusion_mlp2 = nn.Sequential(
+            nn.Linear(config.hidden_size * 3 * self.sub_frame_size, config.hidden_size * self.sub_frame_size),
+            (nn.Tanh() if self.config.activation_fn == "tanh" else nn.LeakyReLU()))
+    
+        self.out = Classifier(in_size=config.hidden_size * self.sub_frame_size, hidden_size=config.hidden_size, 
+                              dropout=config.dropout, num_classes=config.num_labels, config = config)
+
+
+    def forward(self, audio_paths, openfacefeat_, video_paths):
+
+        B = audio_paths.size(0) # Batch size
+        # For audio:
+        audio_paths = audio_paths.transpose(1, 2)  # [B, 64, 768]
+        audio_features = audio_paths.reshape(
+            B, 
+            self.sub_frame_size,
+            audio_paths.size(1) // self.sub_frame_size,
+            audio_paths.size(2)
+        ).mean(dim=2)  # [B, 8, 768]
+
+        # For video:
+        video_paths = video_paths.transpose(1, 2)  # [B, 64, 1024]
+        video_features = video_paths.reshape(
+            B, 
+            self.sub_frame_size,
+            video_paths.size(1) // self.sub_frame_size,
+            video_paths.size(2)
+        ).mean(dim=2)  # [B, 8, 1024]
+
+        # For OpenFace:
+        stacked_openface = torch.stack([of.transpose(0, 1) for of in openfacefeat_])  # [B, 64, 329]
+        openfacefeat = stacked_openface.reshape(
+            B,
+            self.sub_frame_size,
+            stacked_openface.size(1) // self.sub_frame_size,
+            stacked_openface.size(2)
+        ).mean(dim=2)  # [B, 8, 329]
+
+        openfacefeat = openfacefeat.cuda()
+        openfacefeat = (openfacefeat - self.MIN_VEC) / (self.MAX_VEC - self.MIN_VEC)
+        openfacefeat = openfacefeat - 0.5
+        openfacefeat_filtered = openfacefeat[:, :, [OPENFACE_COLUMN_NAMES.index(i) for i in self.filteredcolumns]]
+
+        # Process features through MLPs
+        processed_openface_features = []
+        processed_video_features = []
+        processed_audio_features = []
+        
+        for i in range(self.sub_frame_size):
+            # Process each temporal slice
+            openface_slice = self.openface_mlp(openfacefeat_filtered[:, i, :])
+            audio_slice = self.audio_mlp(audio_features[:, i, :])
+            video_slice = self.video_mlp(video_features[:, i, :])
+            
+            processed_openface_features.append(openface_slice) # [B, sub_frame_size, hidden_size]
+            processed_audio_features.append(audio_slice) # [B, sub_frame_size, hidden_size]
+            processed_video_features.append(video_slice) # [B, sub_frame_size, hidden_size]
+
+
+        # Stack processed features
+        processed_openface = torch.cat(processed_openface_features, dim=1)  # [B, hidden_size * sub_frame_size]
+        processed_audio = torch.cat(processed_audio_features, dim=1)  # [B, hidden_size * sub_frame_size]
+        processed_video = torch.cat(processed_video_features, dim=1)  # [B, hidden_size * sub_frame_size]
+
+        # Path 1: Concatenation and MLP
+        fusion_vec = torch.cat([processed_video, processed_openface, processed_audio], dim=1)  # [B, 3 * hidden_size * sub_frame_size]
+        concat_output = self.fusion_mlp2(fusion_vec)  # [B, hidden_size * sub_frame_size]
+
+        # Path 2: Cross-attention
+        fusion_attention = torch.cat([processed_video, processed_openface], dim=1)  # [B, 2 * hidden_size * sub_frame_size]
+        attention_input = self.fusion_mlp(fusion_attention)  # [B, hidden_size * sub_frame_size]
+
+        # Reshape for nn.MultiheadAttention with batch_first=True: [batch_size, seq_len, embed_dim]
+        attention_input_reshaped = attention_input.view(B, self.sub_frame_size, -1)  # [B, sub_frame_size, hidden_size]
+        audio_reshaped = processed_audio.view(B, self.sub_frame_size, -1)  # [B, sub_frame_size, hidden_size]
+
+        # Apply cross-attention (with batch_first=True)
+        attn_output, _ = self.cross_attention(
+            query=attention_input_reshaped,
+            key=audio_reshaped,
+            value=audio_reshaped
+        )
+
+        # Reshape back to match concat_output (no permutation needed)
+        attention_output = attn_output.reshape(B, -1)  # [B, hidden_size * sub_frame_size]
+
+        # Combine outputs from both paths
+        combined_output = concat_output + attention_output  # [B, hidden_size * sub_frame_size]
+
+        # Final classification
+        return self.out(combined_output)  # [B, num_classes]
+
+
+
+class CrossAttention(nn.Module):
+    def __init__(self, dim):
+        super().__init__()
+        self.attn = nn.MultiheadAttention(embed_dim=dim, num_heads=8, batch_first=True)
+
+    def forward(self, query, context):
+        query = query.unsqueeze(1)    # [B, 1, D]
+        context = context.unsqueeze(1)  # [B, 1, D]
+        attn_out, _ = self.attn(query, context, context)  # [B, 1, D]
+        return attn_out.squeeze(1)     # [B, D]
+
+class ListenerSpeakerHybridFusionSampling(nn.Module):
+    def __init__(self, config, listener_input_dim=64, listener_seq_len=1024,
+                 speaker_input_dim=64, speaker_seq_len=768, reduced_speaker_dim=32, pooling_factor=8):
+        super().__init__()
+        self.config = config
+        self.pooling_factor = pooling_factor
+        self.sub_frame_size = 64 // pooling_factor
+
+        self.mlp = nn.Sequential(
+            nn.Linear(config.hidden_size * self.sub_frame_size * 2, config.hidden_size * self.sub_frame_size),
+            nn.ReLU(),
+        )
+        self.mlp_norm = nn.LayerNorm(config.hidden_size)
+
+        self.listener_proj = nn.Sequential(
+            nn.Linear(listener_seq_len, config.hidden_size),
+            nn.Flatten()
+        )
+        self.speaker_proj = nn.Sequential(
+            nn.Linear(speaker_seq_len, config.hidden_size),
+            nn.Flatten()
+        )
+
+        self.cross_attention = CrossAttention(dim=config.hidden_size * self.sub_frame_size)
+        self.attn_norm = nn.LayerNorm(config.hidden_size)
+
+        self.classifier = nn.Linear(config.hidden_size * self.sub_frame_size, config.num_labels)
+        self.activation_fn = {
+            "relu": nn.ReLU(),
+            "leaky_relu": nn.LeakyReLU(),
+            "tanh": nn.Tanh()
+
+        }[config.activation_fn.lower()] 
+
+    def forward(self, listener_feats, speaker_feats):
+        # listener_feats: [B, 1024, 64]
+        # speaker_feats:  [B, 768, 64]
+
+        # [B, feature_dim, seq_len]
+        listener_feats = listener_feats.transpose(1, 2)  # [B, 64, 1024]
+        speaker_feats = speaker_feats.transpose(1, 2)    # [B, 64, 768]
+
+        # Downsample listener and speaker features by averaging over 8 frames, the output should be [B, 8, 1024]
+        listener_feats = listener_feats.reshape(listener_feats.size(0), self.sub_frame_size, self.pooling_factor, -1).mean(dim=2)
+        speaker_feats = speaker_feats.reshape(speaker_feats.size(0), self.sub_frame_size, self.pooling_factor, -1).mean(dim=2)
+        # print(f"listener_feats shape: {listener_feats.shape}") # [B, 8, 1024]
+        # print(f"speaker_feats shape: {speaker_feats.shape}") # [B, 8, 768]
+
+        listener_proj_out = self.listener_proj(listener_feats)  # [B, hidden_size * 8]
+        speaker_proj_out = self.speaker_proj(speaker_feats)     # [B, hidden_size * 8]
+    
+        fused = torch.cat([listener_proj_out, speaker_proj_out], dim=1)    # [B, 1792] 
+        # print(f"Fused shape: {fused.shape}")  
+
+        mlp_hidden = self.mlp(fused)                      
+        # mlp_hidden = self.mlp_norm(mlp_hidden)
+        # print(f"mlp_hidden shape: {mlp_hidden.shape}")  # [B, 64]
+
+        # print(f"listener_proj_out shape: {listener_proj_out.shape}")
+        # print(f"speaker_proj_out shape: {speaker_proj_out.shape}")
+        listener_attn = self.cross_attention(listener_proj_out, speaker_proj_out)  # [B, hidden_size]
+        # listener_attn = self.attn_norm(listener_attn)
+
+        # print(f"listener_attn shape: {listener_attn.shape}")
+        final_rep = mlp_hidden + listener_attn  # [B, hidden_size]
+        # print(f"final_rep shape: {final_rep.shape}")
+        final_rep = self.classifier(final_rep)  # [B, num_labels]
+        # print(f"Logits before tanh: {final_rep.mean().item()}, {final_rep.min().item()}, {final_rep.max().item()}")
+        final_rep = self.activation_fn(final_rep)
+
+        return final_rep
+>>>>>>> origin-sadra/Method2FinalModel
